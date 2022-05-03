@@ -23,7 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.DatabaseHelper;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
 
@@ -47,8 +49,7 @@ public class AddAccountFragment extends Fragment implements View.OnClickListener
         return addAccountFragment;
     }
 
-    public AddAccountFragment() {
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,13 +60,13 @@ public class AddAccountFragment extends Fragment implements View.OnClickListener
         initialBalance = (EditText) rootView.findViewById(R.id.initial_balance);
         addAccount = (Button) rootView.findViewById(R.id.add_account);
         addAccount.setOnClickListener(this);
-
         currentExpenseManager = (ExpenseManager) getArguments().get(EXPENSE_MANAGER);
         return rootView;
     }
 
     @Override
     public void onClick(View view) {
+
         switch (view.getId()) {
             case R.id.add_account:
                 String accountNumStr = accountNumber.getText().toString();
@@ -101,6 +102,9 @@ public class AddAccountFragment extends Fragment implements View.OnClickListener
                 cleanUp();
                 break;
         }
+
+
+
     }
 
     private void cleanUp() {
