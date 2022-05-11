@@ -16,6 +16,7 @@
 
 package lk.ac.mrt.cse.dbs.simpleexpensemanager;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Application;
@@ -27,10 +28,14 @@ import androidx.test.core.app.ApplicationProvider;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.List;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.PersistentExpenseManager;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
@@ -48,11 +53,31 @@ public class ApplicationTest {
 
     @Test
     public void testAddAccount() {
-       assertTrue(true);
-//         expenseManager.addAccount("12","ABC","Hasitha",200);
-//         List<String> accountNumbersList = expenseManager.getAccountNumbersList();
-//         assertTrue(accountNumbersList.contains("12"));
+         expenseManager.addAccount("12","ABC","Hasitha",200);
+         List<String> accountNumbersList = expenseManager.getAccountNumbersList();
+         assertTrue(accountNumbersList.contains("12"));
     }
 
+    @Test
+    public void testRemoveAccount() throws InvalidAccountException {
+        expenseManager.getAccountsDAO().removeAccount("12");
+        List<String> accountNumbersList = expenseManager.getAccountNumbersList();
+        assertFalse(accountNumbersList.contains("12"));
+    }
+
+    @Test
+    public void testUpdateBalance() throws InvalidAccountException {
+        double balance = expenseManager.getAccountsDAO().getAccount("12").getBalance();
+        expenseManager.updateAccountBalance("12",01,11,2011, ExpenseType.INCOME,"2000.00");
+        assertTrue(expenseManager.getAccountsDAO().getAccount("12").getBalance()==balance+2000);
+     }
+
+    @Test
+    public void testAddTransaction(){
+        expenseManager.getTransactionsDAO().logTransaction(new Date(),"12",ExpenseType.INCOME,2000.00);
+        List<Transaction> allTransactionLogs = expenseManager.getTransactionsDAO().getAllTransactionLogs();
+        Transaction transaction = allTransactionLogs.get(allTransactionLogs.size()-1);
+        assertTrue(transaction.getAccountNo()=="12" && transaction.getExpenseType()==ExpenseType.INCOME && transaction.getAmount()==2000.00);
+    }
 
 }
